@@ -15,6 +15,7 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<Habit> myHabitArrayList = new ArrayList<Habit>();
     private HabitAdapter adapter ;
     public int posit;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,8 +24,6 @@ public class MainActivity extends AppCompatActivity {
         if (savedInstanceState != null){
             posit = savedInstanceState.getInt("posit");
             myHabitArrayList = (ArrayList<Habit>)savedInstanceState.getSerializable("ArrayList");
-            //adapter = (HabitAdapter) savedInstanceState.getSerializable("adapter");
-            //adapter.notifyDataSetChanged();
 
         }
             RecyclerView habitRecycler = findViewById(R.id.recycle);
@@ -42,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
     }
+
     public void onClickDone(View view){
         Intent intent = new Intent(this, HabitActivity.class);
         startActivityForResult(intent, 1);
@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
         if (data == null) {
             return;
         }
-        Habit habit = (Habit) data.getSerializableExtra("Habit");
+        Habit habit = (Habit) data.getSerializableExtra(HabitActivity.HABIT_EXTRA);
         if (requestCode == 1) {
             myHabitArrayList.add(habit);
             adapter.notifyDataSetChanged();
@@ -61,11 +61,11 @@ public class MainActivity extends AppCompatActivity {
            adapter.notifyDataSetChanged();
         }
     }
+
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
          super.onSaveInstanceState(savedInstanceState);
          savedInstanceState.putInt("posit", posit);
          savedInstanceState.putSerializable("ArrayList",  myHabitArrayList);
-        // savedInstanceState.putSerializable("adapter", adapter);
     }
 }

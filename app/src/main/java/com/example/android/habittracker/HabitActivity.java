@@ -11,12 +11,15 @@ import android.widget.Spinner;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class HabitActivity extends AppCompatActivity {
+    public static final String HABIT_EXTRA = "Habit";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_habit);
     }
+
     public void onRadioButtonClicked(View view){
         RadioGroup radioGroup = (RadioGroup)findViewById(R.id.radio_group);
         int id = radioGroup.getCheckedRadioButtonId();
@@ -27,6 +30,7 @@ public class HabitActivity extends AppCompatActivity {
             break;
         }
     }
+
     public void onClickReadily(View view){
         EditText nameView = (EditText)findViewById(R.id.name);
         EditText descriptionView = (EditText)findViewById(R.id.description);
@@ -44,7 +48,7 @@ public class HabitActivity extends AppCompatActivity {
         String frequencyOfExecution = frequencyOfExecutionView.getText().toString();
         Habit habit = new Habit(name, description, priority, type, numberOfRuns,frequencyOfExecution);
         Intent intent = new Intent();
-        intent.putExtra("Habit", habit);
+        intent.putExtra(HABIT_EXTRA, habit);
         setResult(RESULT_OK, intent);
         finish();
     }
