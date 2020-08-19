@@ -1,71 +1,119 @@
 package com.example.android.habittracker;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
+import android.util.Log;
+import android.view.MenuItem;
 
-import java.util.ArrayList;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.navigation.NavigationView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.viewpager.widget.ViewPager;
 
-public class MainActivity extends AppCompatActivity {
 
-    private ArrayList<Habit> myHabitArrayList = new ArrayList<Habit>();
-    private HabitAdapter adapter ;
-    public int posit;
+
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+    FragmentTransaction fragmentTransaction;
+    private static final String TAG = "myLog";
+    private BottomSheetBehavior mBottomSheetBehavior;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        if (savedInstanceState != null){
-            posit = savedInstanceState.getInt("posit");
-            myHabitArrayList = (ArrayList<Habit>)savedInstanceState.getSerializable("ArrayList");
-
-        }
-            RecyclerView habitRecycler = findViewById(R.id.recycle);
-            adapter = new HabitAdapter(myHabitArrayList);
-            habitRecycler.setAdapter(adapter);
-            LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-            habitRecycler.setLayoutManager(layoutManager);
-
-            adapter.setListener(new HabitAdapter.Listener() {
-                @Override
-                public void onClick(int position) {
-                    Intent intent = new Intent(MainActivity.this, HabitActivity.class);
-                    posit = position;
-                    startActivityForResult(intent, 2);
-                }
-            });
+      //  View bottomSheet = findViewById(R.id.bottom_sheet);
+       // mBottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
+        final FilterFragment filterFragment = new FilterFragment();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.containerBottomSheet, filterFragment)
+                .commit();
+        NavigationView navigationView = findViewById((R.id.nav_view));
+        navigationView.setNavigationItemSelectedListener(this);
+        SectionsPagerAdapter pagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+        ViewPager pager = findViewById(R.id.pager);
+        pager.setAdapter(pagerAdapter);
     }
-
-    public void onClickDone(View view){
-        Intent intent = new Intent(this, HabitActivity.class);
-        startActivityForResult(intent, 1);
-    }
-
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (data == null) {
-            return;
+    public boolean onNavigationItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        Fragment fragment;
+        switch (id) {
+            case R.id.nav_info:
+                fragment = new DescriptionFragment();
+                fragmentTransaction = getSupportFragmentManager()
+                        .beginTransaction();
+                fragmentTransaction.add(R.id.container, fragment);
+                Log.d(TAG, "в контейнер добавлен infoFragment");
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
+                break;
+            case R.id.nav_screen:
+                fragment = new RecycleFragment();
+                fragmentTransaction = getSupportFragmentManager()
+                        .beginTransaction();
+                fragmentTransaction.add(R.id.pager, fragment);
+                Log.d(TAG, "в ViewPager добавлен RecycleFragment");
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
+                break;
         }
-        Habit habit = (Habit) data.getSerializableExtra(HabitActivity.HABIT_EXTRA);
-        if (requestCode == 1) {
-            myHabitArrayList.add(habit);
-            adapter.notifyDataSetChanged();
-        } else if(requestCode == 2){
-           myHabitArrayList.set(posit, habit);
-           adapter.notifyDataSetChanged();
+        DrawerLayout drawerLayout = findViewById((R.id.drawer_layout));
+        drawerLayout.closeDrawer(GravityCompat.START);
+        return true;
+    }
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawerLayout = findViewById((R.id.drawer_layout));
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
         }
     }
+    private class SectionsPagerAdapter extends FragmentPagerAdapter {
 
-    @Override
-    public void onSaveInstanceState(Bundle savedInstanceState) {
-         super.onSaveInstanceState(savedInstanceState);
-         savedInstanceState.putInt("posit", posit);
-         savedInstanceState.putSerializable("ArrayList",  myHabitArrayList);
+        SectionsPagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public int getCount() {
+            return 2;
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            switch (position) {
+                case 0:
+                    Log.d(TAG, "MainActivity 89");
+                    return RecycleFragment.newInstance(true);
+                case 1:
+                    return RecycleFragment.newInstance(false);
+            }
+            return null;
+        }
     }
 }
+//<androidx.core.widget.NestedScrollView
+//        android:id="@+id/bottom_sheet"
+//        android:layout_width="match_parent"
+//        android:layout_height="350dp"
+//        android:background="@android:color/holo_orange_light"
+//        android:clipToPadding="true"
+//        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+//
+//<TextView
+//                android:layout_width="match_parent"
+//                        android:layout_height="match_parent"
+//                        android:paddingTop="16dp"
+//                        android:text="@string/bottom_sheets"
+//                        android:textSize="16sp" />
+//</androidx.core.widget.NestedScrollView>
+
+//<include layout="@layout/fragment_filter" />
