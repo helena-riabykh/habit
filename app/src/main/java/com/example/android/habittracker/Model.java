@@ -32,6 +32,7 @@ public class Model {
     }
     public void addHabit(Habit habit){
         myHabitArrayList.add(habit);
+        Log.d(TAG, "стр. 35 Model + habit" + habit);
         mMutableLiveData.setValue(myHabitArrayList);
         Log.d(TAG, "стр. 30 Model");
     }

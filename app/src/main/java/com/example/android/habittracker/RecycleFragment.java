@@ -18,6 +18,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -35,8 +36,9 @@ public class RecycleFragment extends Fragment {
     private static final int TARGET_FRAGMENT_REQUEST_CODE_TWO = 2;
     private static final String TAG = "myLog";
     static final String TYPE_EXTRA = "Type";
-    private Model model;
+ //   private Model model;
     public RecycleFragmentViewModel mRecycleFragmentViewModel;
+ //   private String name;
 
     static RecycleFragment newInstance(ArrayList<Habit> myHabitArrayList) {
         RecycleFragment recycleFragment = new RecycleFragment();
@@ -60,9 +62,11 @@ public class RecycleFragment extends Fragment {
         if (savedInstanceState != null) {
             posit = savedInstanceState.getInt("posit");
             myHabitArrayList = (ArrayList<Habit>) savedInstanceState.getSerializable("ArrayList");
+//            isUseful = savedInstanceState.getBoolean("isUseful");
+//            name = savedInstanceState.getString("name");
         }
-        mRecycleFragmentViewModel = new RecycleFragmentViewModel();
-
+        mRecycleFragmentViewModel = new ViewModelProvider(requireActivity()).get(RecycleFragmentViewModel.class);
+//        name = mRecycleFragmentViewModel.getStringName();
     }
 
     @Override
@@ -113,7 +117,7 @@ public class RecycleFragment extends Fragment {
             isUseful = (Boolean) getArguments().getBoolean(TYPE_EXTRA);
             if (!isUseful) {
                 LiveData<List<Habit>> data = mRecycleFragmentViewModel.getHarmful();
-                data.observe(this, new Observer<List<Habit>>() {
+                data.observe(getViewLifecycleOwner(), new Observer<List<Habit>>() {
                     @Override
                     public void onChanged(@Nullable List<Habit> list) {
                         myHabitArrayList = list;
@@ -122,9 +126,9 @@ public class RecycleFragment extends Fragment {
                         adapter.notifyDataSetChanged();
                     }
                 });
-            } else if (isUseful) {
+            }else if (isUseful) {
                 LiveData<List<Habit>> data = mRecycleFragmentViewModel.getUseful();
-                data.observe(this, new Observer<List<Habit>>() {
+                data.observe(getViewLifecycleOwner(), new Observer<List<Habit>>() {
                     @Override
                     public void onChanged(@Nullable List<Habit> list) {
                         myHabitArrayList = list;
@@ -134,7 +138,44 @@ public class RecycleFragment extends Fragment {
                     }
                 });
             }
+//            if (!isUseful) {
+//                LiveData<List<Habit>> data = mRecycleFragmentViewModel.getHarmful();
+//                data.observe(getViewLifecycleOwner(), new Observer<List<Habit>>() {
+//                    @Override
+//                    public void onChanged(@Nullable List<Habit> list) {
+//                        myHabitArrayList = list;
+//                        adapter.setMyHabitArrayList(myHabitArrayList);
+//                        Log.d(TAG, "стр. 121 RecycleFragment");
+//                        adapter.notifyDataSetChanged();
+//                    }
+//                });
+//            }
         }
+//        else if (isUseful) {
+//                LiveData<List<Habit>> data = mRecycleFragmentViewModel.getUseful();
+//                data.observe(getViewLifecycleOwner(), new Observer<List<Habit>>() {
+//                    @Override
+//                    public void onChanged(@Nullable List<Habit> list) {
+//                        myHabitArrayList = list;
+//                        adapter.setMyHabitArrayList(myHabitArrayList);
+//                        Log.d(TAG, "стр. 131 RecycleFragment");
+//                        adapter.notifyDataSetChanged();
+//                    }
+//                });
+//            }
+//        }
+//        if(mRecycleFragmentViewModel.getStringName() != null) {
+//            LiveData<List<Habit>> data = mRecycleFragmentViewModel.getName();
+//            data.observe(getViewLifecycleOwner(), new Observer<List<Habit>>() {
+//                @Override
+//                public void onChanged(@Nullable List<Habit> list) {
+//                    myHabitArrayList = list;
+//                    adapter.setMyHabitArrayList(myHabitArrayList);
+//                    Log.d(TAG, "стр. 131 RecycleFragment");
+//                    adapter.notifyDataSetChanged();
+//                }
+//            });
+//        }
         return view;
     }
 
@@ -143,6 +184,8 @@ public class RecycleFragment extends Fragment {
         super.onSaveInstanceState(savedInstanceState);
         savedInstanceState.putInt("posit", posit);
         savedInstanceState.putSerializable("ArrayList", (ArrayList) myHabitArrayList);
+//        savedInstanceState.putBoolean("isUseful", isUseful);
+//        savedInstanceState.putString("name", name);
     }
 }
 
