@@ -12,8 +12,7 @@ public class App extends Application {
     private static App instance;
     private AppDatabase db;
 
-    public static App getInstance()
-    {
+    public static App getInstance() {
         return instance;
     }
 

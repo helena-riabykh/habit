@@ -37,33 +37,23 @@ public class FilterFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_filter, container, false);
         final EditText editText = view.findViewById(R.id.description);
-        editText.addTextChangedListener(new TextWatcher(){
+        editText.addTextChangedListener(new TextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
-//                    strValue = editText.getText().toString();
-//                if(editText.getText().length() == 3) {
-//                    editText.setText(editText.getText().subSequence(0, editText.getText().length() - 1));
-//                }
                 strValue = editText.getText().toString();
- //               mRecycleFragmentViewModel.setName(strValue);
                 mHabitFragmentViewModel.notifyName(strValue);
-        }
+            }
+
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-//Прописываем то, что надо выполнить до изменений
+                //Прописываем то, что надо выполнить до изменений
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-//только что заменены
- //               strValue = editText.getText().toString();
- //               mRecycleFragmentViewModel.setName(strValue);
+                //только что заменены
             }
         });
-//        mRecycleFragmentViewModel.setName(strValue);
         return view;
     }
-//    public String getStrValue(){
-//        return strValue;
-//    }
 }
