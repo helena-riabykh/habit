@@ -2,10 +2,16 @@ package com.example.android.habittracker;
 
 import java.io.Serializable;
 
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 /**
  * Created by Anton on 21.03.2020.
  */
+@Entity
 public class Habit implements Serializable {
+    @PrimaryKey(autoGenerate = true)
+    public int id;
     private String name;
     private String description;
     private String priority;
@@ -14,8 +20,9 @@ public class Habit implements Serializable {
     private String frequencyOfExecution;
 
 
-    public Habit(String name, String description, String priority, String type, String numberOfRuns,
+    public Habit(int id, String name, String description, String priority, String type, String numberOfRuns,
                  String frequencyOfExecution){
+        this.id = id;
         this.name = name;
         this.description = description;
         this.priority = priority;
@@ -41,6 +48,11 @@ public class Habit implements Serializable {
     public void setFrequencyOfExecution(String frequencyOfExecution){
         this.frequencyOfExecution = frequencyOfExecution;
     }
+
+    public int getId() {
+        return id;
+    }
+
     public String getName(){
         return name;
     }

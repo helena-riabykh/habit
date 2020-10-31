@@ -1,8 +1,7 @@
 package com.example.android.habittracker;
 
-import android.util.Log;
+import android.os.AsyncTask;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import androidx.lifecycle.LiveData;
@@ -13,12 +12,16 @@ import androidx.lifecycle.MutableLiveData;
  */
 public class Model {
     private static Model instance;
-    private List<Habit> myHabitArrayList;
     private final MutableLiveData<List<Habit>> mMutableLiveData = new MutableLiveData<>();
     private static final String TAG = "myLog";
+    private AppDatabase db;
+    private HabitDao mHabitDao;
+    public MyAsyncTask mMyAsyncTask;
+    public MyAsyncTaskTwo mMyAsyncTaskTwo;
 
     private Model() {
-        myHabitArrayList =  new ArrayList<Habit>();
+        db = App.getInstance().getAppDatabaseInstance();
+        mHabitDao = db.getHabitDao();
     }
 
     public static Model getInstance() {
@@ -27,31 +30,47 @@ public class Model {
         }
         return instance;
     }
-    public List<Habit> getMyHabitArrayList(){
-        return myHabitArrayList;
-    }
-    public void addHabit(Habit habit){
-        myHabitArrayList.add(habit);
-        Log.d(TAG, "стр. 35 Model + habit" + habit);
-        mMutableLiveData.setValue(myHabitArrayList);
-        Log.d(TAG, "стр. 30 Model");
+
+    public void addHabit(Habit habit) {
+        mMyAsyncTask = new MyAsyncTask();
+        mMyAsyncTask.execute(habit);
     }
 
-    public void editingHabit(int posit, Habit habit, int init, int index){
-        if (init < 3 && init > 0) {
-            myHabitArrayList.set(posit, habit);
-            //это случай, когда не меняем Useful на Harmful или наоборот
-        }else if(init == 3) {
-           // int index = myHabitArrayList.indexOf(habit);
-            myHabitArrayList.remove(index);
-            myHabitArrayList.add(habit);
-            //это случай, когда меняем Useful на Harmful или наоборот
-        }
-        mMutableLiveData.setValue(myHabitArrayList);
-        Log.d(TAG, "стр. 33 Model" + posit);
+    public void editingHabit(int posit, Habit habit) {
+        mMyAsyncTaskTwo = new MyAsyncTaskTwo();
+        mMyAsyncTaskTwo.execute(habit);
+    }
+
+    public void filterName(String name) {
+        mMutableLiveData.setValue(mHabitDao.getAllWithNameLike(name));
     }
 
     public LiveData<List<Habit>> getHabitsLiveData() {
         return mMutableLiveData;
+    }
+
+
+
+    private class MyAsyncTask extends AsyncTask<Habit, Void, Void> {
+        @Override
+        protected Void doInBackground(Habit... habits) {
+            Habit habit = habits[0];
+            mHabitDao.insert(habit);
+            return null;
+        }
+        protected void onPostExecute(Void result){
+            mMutableLiveData.setValue(mHabitDao.getAll());
+        }
+    }
+    private class MyAsyncTaskTwo extends AsyncTask <Habit, Void, Void> {
+        @Override
+        protected Void doInBackground(Habit... habits) {
+            Habit habit = habits[0];
+            mHabitDao.update(habit);
+            return null;
+        }
+        protected void onPostExecute(Void result){
+            mMutableLiveData.setValue(mHabitDao.getAll());
+        }
     }
 }

@@ -17,16 +17,18 @@ public class RecycleFragmentViewModel extends ViewModel {
     private Model model;
     private static final String TAG = "myLog";
     private String name;
-    private final MutableLiveData<List<Habit>> mMutableLiveData = new MutableLiveData<>();
+    private final MutableLiveData<List<Habit>> mMutableLiveDataUseful = new MutableLiveData<>();
+    private final MutableLiveData<List<Habit>> mMutableLiveDataHarmful = new MutableLiveData<>();
+//    private final MutableLiveData<String> mLiveData = new MutableLiveData<>();
 
     public RecycleFragmentViewModel() {
         this.model = Model.getInstance();
     }
 
-    public void setName(String name) {
-        //вызывается из FilterFragment после того, как введено слово для фильтра
-        this.name = name;
-    }
+//    public void setName(String name) {
+//        //вызывается из FilterFragment после того, как введено слово для фильтра
+//        this.name = name;
+//    }
 
 
     //    public LiveData<List<Habit>> getHarmful() {
@@ -64,19 +66,19 @@ public class RecycleFragmentViewModel extends ViewModel {
                         Log.d(TAG, "стр. 64 RFVM");
                     }
                 }
-                if (name != null) {
-                    for (Habit habit : result) {
-                        if (habit.getName().contains(name)) {
-                            result.add(habit);
-                        } else {
-                            result.remove(habit);
-                        }
-                    }
-                }
-                mMutableLiveData.setValue(result);
+//                if (name != null) {
+//                    for (Habit habit : result) {
+//                        if (habit.getName().contains(name)) {
+//                            result.add(habit);
+//                        } else {
+//                            result.remove(habit);
+//                        }
+//                    }
+//                }
+                mMutableLiveDataHarmful.setValue(result);
             }
         });
-        return mMutableLiveData;
+        return mMutableLiveDataHarmful;
     }
 
     public LiveData<List<Habit>> getUseful() {
@@ -85,8 +87,7 @@ public class RecycleFragmentViewModel extends ViewModel {
             public void onChanged(List<Habit> habits) {
                 ArrayList<Habit> result = new ArrayList<>();
                 for (Habit habit : habits) {
-                    if (habit.getType().equals("Useful") &&
-                            (name == null || habit.getName().contains(name))) {
+                    if (habit.getType().equals("Useful")) {
                         result.add(habit);
                         Log.d(TAG, "стр. 64 RFVM");
                     }
@@ -101,10 +102,10 @@ public class RecycleFragmentViewModel extends ViewModel {
 //                        }
 //                    }
 //                }
-                mMutableLiveData.setValue(result);
+                mMutableLiveDataUseful.setValue(result);
             }
         });
-        return mMutableLiveData;
+        return mMutableLiveDataUseful;
     }
 //
 //        public LiveData<List<Habit>> getHarmful() {
@@ -165,19 +166,30 @@ public class RecycleFragmentViewModel extends ViewModel {
     public String getStringName() {
         return name;
     }
-}
+
 //    public LiveData<List<Habit>> getName() {
-//        return Transformations.map(model.getHabitsLiveData(),
-//                new Function<List<Habit>, List<Habit>>() {
-//                    @Override
-//                    public ArrayList<Habit> apply(List<Habit> input) {
-//                        ArrayList<Habit> result = new ArrayList<>();
-//                        for (Habit habit : input){
-//                            if (habit.getName().contains(name)){
-//                                result.add(habit);
+//        model.getLiveData().observeForever(new Observer<String>() {
+//            //           private String name;
 //
-//                            }
-//                        }
-//                        return result;
-//                    }
-//                });
+//            @Override
+//            public void onChanged(String name) {
+//                //                this.name = name;
+//                mLiveData.setValue(name);
+//
+//            }
+////        return Transformations.map(model.getHabitsLiveData(),
+////                new Function<List<Habit>, List<Habit>>() {
+////                    @Override
+////                    public ArrayList<Habit> apply(List<Habit> input) {
+////                        ArrayList<Habit> result = new ArrayList<>();
+////                        for (Habit habit : input){
+////                            if (habit.getName().contains(name)){
+////                                result.add(habit);
+////
+////                            }
+////                        }
+////                        return result;
+//        });
+//        return mLiveData;
+//    }
+}

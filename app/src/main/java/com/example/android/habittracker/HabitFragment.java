@@ -31,8 +31,15 @@ public class HabitFragment extends Fragment {
     private static final String TAG = "my log";
     private HabitFragmentViewModel mHabitFragmentViewModel;
     private int positItem = -1;
-    private int init = 0;
-    private int index = -2;
+    //init == 1 если был Useful  b  init == 2 если Harmful(нажали на запись привычки при редактировании)
+//    private int init = 0;
+    //index это номер позиции Habit в ArrayList, который формируется в Model(здесь стр.69)
+ //   private int index = -2;
+    public int id;
+
+//    public HabitFragment (){
+//        id++;
+//    }
 
 
     static HabitFragment newInstance(Habit habit) {
@@ -64,7 +71,8 @@ public class HabitFragment extends Fragment {
              Model model = Model.getInstance();
              habit = (Habit) getArguments().getSerializable(HABIT_EXTRA);
              //находим индекс объекта habit в MyHabitArrayList:
-             index = model.getMyHabitArrayList().indexOf(habit);
+ //            index = model.getMyHabitArrayList().indexOf(habit);
+             id = habit.getId();
              positItem = getArguments().getInt(String.valueOf(INT_EXTRA));
              assert habit != null;
              nameView.setText(habit.getName());
@@ -83,11 +91,11 @@ public class HabitFragment extends Fragment {
              switch (habit.getType()){
                  case "Useful":
                      radioGroupView.check(R.id.radio_useful);
-                     init = 1;
+ //                    init = 1;
                      break;
                  case "Harmful":
                      radioGroupView.check(R.id.radio_harmful);
-                     init = 2;
+ //                    init = 2;
                      break;
              }
              numberOfRunsView.setText(habit.getNumberOfRuns());
@@ -100,19 +108,19 @@ public class HabitFragment extends Fragment {
                 String name = nameView.getText().toString();
                 String description = descriptionView.getText().toString();
                 String priority = String.valueOf(priorityView.getSelectedItem());
-                int id = radioGroupView.getCheckedRadioButtonId();
-                radioButtonView = radioGroupView.findViewById(id);
+                int idem = radioGroupView.getCheckedRadioButtonId();
+                radioButtonView = radioGroupView.findViewById(idem);
                 String type = radioButtonView.getText().toString();
                 String numberOfRuns = numberOfRunsView.getText().toString();
                 String frequencyOfExecution = frequencyOfExecutionView.getText().toString();
-                habit = new Habit(name, description, priority, type, numberOfRuns, frequencyOfExecution);
+                habit = new Habit(id, name, description, priority, type, numberOfRuns, frequencyOfExecution);
  //               ((MainActivity)requireActivity()).notify(habit);
                 mHabitFragmentViewModel = new HabitFragmentViewModel();
-                if (init == 1 && type.equals("Harmful") || init == 2 && type.equals("Useful")){
-                    init = 3;
-                }
+//                if (init == 1 && type.equals("Harmful") || init == 2 && type.equals("Useful")){
+//                    init = 3;
+//                }
                 Log.d(TAG, "стр. 104 HabitFragment");
-                mHabitFragmentViewModel.notify(habit, positItem, init, index);
+                mHabitFragmentViewModel.notify(habit, positItem);
 //                sendResult(habit);
                 requireActivity().onBackPressed();
             }

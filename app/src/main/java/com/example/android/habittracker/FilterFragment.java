@@ -10,24 +10,25 @@ import android.widget.EditText;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class FilterFragment extends Fragment {
     String strValue;
+    private Model model;
 
-    private RecycleFragmentViewModel mRecycleFragmentViewModel;
+    private HabitFragmentViewModel mHabitFragmentViewModel;
 
     public FilterFragment() {
+        this.model = Model.getInstance();
         // Required empty public constructor
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mRecycleFragmentViewModel = new ViewModelProvider(requireActivity()).get(RecycleFragmentViewModel.class);
+        mHabitFragmentViewModel = new HabitFragmentViewModel();
     }
 
     @Override
@@ -44,7 +45,8 @@ public class FilterFragment extends Fragment {
 //                    editText.setText(editText.getText().subSequence(0, editText.getText().length() - 1));
 //                }
                 strValue = editText.getText().toString();
-                mRecycleFragmentViewModel.setName(strValue);
+ //               mRecycleFragmentViewModel.setName(strValue);
+                mHabitFragmentViewModel.notifyName(strValue);
         }
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
