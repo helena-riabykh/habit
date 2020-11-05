@@ -36,7 +36,6 @@ public class RecycleFragment extends Fragment {
     private static final int TARGET_FRAGMENT_REQUEST_CODE_TWO = 2;
     private static final String TAG = "myLog";
     private static final String TYPE_EXTRA = "Type";
- //   private Model model;
     public RecycleFragmentViewModel mRecycleFragmentViewModel;
 
     static RecycleFragment newInstance(ArrayList<Habit> myHabitArrayList) {
@@ -102,7 +101,6 @@ public class RecycleFragment extends Fragment {
                 fragmentManager = Objects.requireNonNull(getActivity()).getSupportFragmentManager();
                 fragmentTransaction = fragmentManager
                         .beginTransaction();
-                // замещаем фрагмент
                 fragmentTransaction.replace(R.id.container, habitFragment);
                 Log.d(TAG, "в контейнер добавлен habitFragment, стр. 103 RecycleFragment");
                 fragmentTransaction.addToBackStack(null);

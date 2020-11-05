@@ -16,8 +16,8 @@ public class Model {
     private static final String TAG = "myLog";
     private AppDatabase db;
     private HabitDao mHabitDao;
-    public MyAsyncTask mMyAsyncTask;
-    public MyAsyncTaskTwo mMyAsyncTaskTwo;
+    public InsertHabitAsyncTask mMyAsyncTask;
+    public EditingHabitAsyncTask mMyAsyncTaskTwo;
 
     private Model() {
         db = App.getInstance().getAppDatabaseInstance();
@@ -32,12 +32,12 @@ public class Model {
     }
 
     public void addHabit(Habit habit) {
-        mMyAsyncTask = new MyAsyncTask();
+        mMyAsyncTask = new InsertHabitAsyncTask();
         mMyAsyncTask.execute(habit);
     }
 
     public void editingHabit(int posit, Habit habit) {
-        mMyAsyncTaskTwo = new MyAsyncTaskTwo();
+        mMyAsyncTaskTwo = new EditingHabitAsyncTask();
         mMyAsyncTaskTwo.execute(habit);
     }
 
@@ -51,7 +51,7 @@ public class Model {
 
 
 
-    private class MyAsyncTask extends AsyncTask<Habit, Void, Void> {
+    private class InsertHabitAsyncTask extends AsyncTask<Habit, Void, Void> {
         @Override
         protected Void doInBackground(Habit... habits) {
             Habit habit = habits[0];
@@ -62,7 +62,7 @@ public class Model {
             mMutableLiveData.setValue(mHabitDao.getAll());
         }
     }
-    private class MyAsyncTaskTwo extends AsyncTask <Habit, Void, Void> {
+    private class EditingHabitAsyncTask extends AsyncTask <Habit, Void, Void> {
         @Override
         protected Void doInBackground(Habit... habits) {
             Habit habit = habits[0];

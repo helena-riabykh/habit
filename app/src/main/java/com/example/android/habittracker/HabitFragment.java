@@ -31,15 +31,7 @@ public class HabitFragment extends Fragment {
     private static final String TAG = "my log";
     private HabitFragmentViewModel mHabitFragmentViewModel;
     private int positItem = -1;
-    //init == 1 если был Useful  b  init == 2 если Harmful(нажали на запись привычки при редактировании)
-//    private int init = 0;
-    //index это номер позиции Habit в ArrayList, который формируется в Model(здесь стр.69)
- //   private int index = -2;
     public int id;
-
-//    public HabitFragment (){
-//        id++;
-//    }
 
 
     static HabitFragment newInstance(Habit habit) {
@@ -49,6 +41,7 @@ public class HabitFragment extends Fragment {
         habitFragment.setArguments(args);
         return habitFragment;
     }
+
     static HabitFragment newInstance(Habit habit, int posit) {
         HabitFragment habitFragment = new HabitFragment();
         Bundle args = new Bundle();
@@ -57,50 +50,47 @@ public class HabitFragment extends Fragment {
         habitFragment.setArguments(args);
         return habitFragment;
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_habit, container, false);
-          nameView = view.findViewById(R.id.name);
-          descriptionView = view.findViewById(R.id.description);
-          priorityView = view.findViewById(R.id.spinner);
-          radioGroupView = view.findViewById(R.id.radio_group);
-          numberOfRunsView = view.findViewById(R.id.numberOfRuns);
-          frequencyOfExecutionView = view.findViewById(R.id.frequencyOfExecution);
-         if (getArguments() != null) {
-             Model model = Model.getInstance();
-             habit = (Habit) getArguments().getSerializable(HABIT_EXTRA);
-             //находим индекс объекта habit в MyHabitArrayList:
- //            index = model.getMyHabitArrayList().indexOf(habit);
-             id = habit.getId();
-             positItem = getArguments().getInt(String.valueOf(INT_EXTRA));
-             assert habit != null;
-             nameView.setText(habit.getName());
-             descriptionView.setText(habit.getDescription());
-             switch (habit.getPriority()) {
-                 case "paramount":
-                     priorityView.setSelection(0);
-                     break;
-                 case "secondary":
-                     priorityView.setSelection(1);
-                     break;
-                 case "minor":
-                     priorityView.setSelection(2);
-                     break;
-             }
-             switch (habit.getType()){
-                 case "Useful":
-                     radioGroupView.check(R.id.radio_useful);
- //                    init = 1;
-                     break;
-                 case "Harmful":
-                     radioGroupView.check(R.id.radio_harmful);
- //                    init = 2;
-                     break;
-             }
-             numberOfRunsView.setText(habit.getNumberOfRuns());
-             frequencyOfExecutionView.setText(habit.getFrequencyOfExecution());
-         }
+        nameView = view.findViewById(R.id.name);
+        descriptionView = view.findViewById(R.id.description);
+        priorityView = view.findViewById(R.id.spinner);
+        radioGroupView = view.findViewById(R.id.radio_group);
+        numberOfRunsView = view.findViewById(R.id.numberOfRuns);
+        frequencyOfExecutionView = view.findViewById(R.id.frequencyOfExecution);
+        if (getArguments() != null) {
+            Model model = Model.getInstance();
+            habit = (Habit) getArguments().getSerializable(HABIT_EXTRA);
+            id = habit.getId();
+            positItem = getArguments().getInt(String.valueOf(INT_EXTRA));
+            assert habit != null;
+            nameView.setText(habit.getName());
+            descriptionView.setText(habit.getDescription());
+            switch (habit.getPriority()) {
+                case "paramount":
+                    priorityView.setSelection(0);
+                    break;
+                case "secondary":
+                    priorityView.setSelection(1);
+                    break;
+                case "minor":
+                    priorityView.setSelection(2);
+                    break;
+            }
+            switch (habit.getType()) {
+                case "Useful":
+                    radioGroupView.check(R.id.radio_useful);
+                    break;
+                case "Harmful":
+                    radioGroupView.check(R.id.radio_harmful);
+                    break;
+            }
+            numberOfRunsView.setText(habit.getNumberOfRuns());
+            frequencyOfExecutionView.setText(habit.getFrequencyOfExecution());
+        }
         Button button = view.findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -114,14 +104,9 @@ public class HabitFragment extends Fragment {
                 String numberOfRuns = numberOfRunsView.getText().toString();
                 String frequencyOfExecution = frequencyOfExecutionView.getText().toString();
                 habit = new Habit(id, name, description, priority, type, numberOfRuns, frequencyOfExecution);
- //               ((MainActivity)requireActivity()).notify(habit);
                 mHabitFragmentViewModel = new HabitFragmentViewModel();
-//                if (init == 1 && type.equals("Harmful") || init == 2 && type.equals("Useful")){
-//                    init = 3;
-//                }
                 Log.d(TAG, "стр. 104 HabitFragment");
                 mHabitFragmentViewModel.notify(habit, positItem);
-//                sendResult(habit);
                 requireActivity().onBackPressed();
             }
         });
