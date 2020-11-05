@@ -17,13 +17,17 @@ public class HabitFragmentViewModel extends ViewModel {
     }
 
     //этот метод вызывается из HabitFragment
-    public void notify(Habit habit, int position, int init, int index){
+    public void notify(Habit habit, int position){
         if (position == -1 ) {
             model.addHabit(habit);
         } else if(position > 0 || position == 0){
-            model.editingHabit(position, habit, init, index);
+            model.editingHabit(position, habit);
             Log.d(TAG, "стр. 25 HFVM" + position);
         }
+    }
+    //этот метод вызывается из FilterFragment
+    public void notifyName(String name){
+        model.filterName(name);
     }
 
 }

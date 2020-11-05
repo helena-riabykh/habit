@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -18,6 +19,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -26,16 +28,14 @@ import androidx.recyclerview.widget.RecyclerView;
  */
 public class RecycleFragment extends Fragment {
     private List<Habit> myHabitArrayList = new ArrayList<>();
-    boolean isUseful;
-    HabitAdapter adapter;
-    public int posit = -1;
+    private HabitAdapter adapter;
+    private int posit = -1;
     private FragmentManager fragmentManager;
     private FragmentTransaction fragmentTransaction;
     private static final int TARGET_FRAGMENT_REQUEST_CODE = 1;
     private static final int TARGET_FRAGMENT_REQUEST_CODE_TWO = 2;
     private static final String TAG = "myLog";
-    static final String TYPE_EXTRA = "Type";
-    private Model model;
+    private static final String TYPE_EXTRA = "Type";
     public RecycleFragmentViewModel mRecycleFragmentViewModel;
 
     static RecycleFragment newInstance(ArrayList<Habit> myHabitArrayList) {
@@ -59,10 +59,9 @@ public class RecycleFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (savedInstanceState != null) {
             posit = savedInstanceState.getInt("posit");
-            myHabitArrayList = (ArrayList<Habit>) savedInstanceState.getSerializable("ArrayList");
+            myHabitArrayList = (List<Habit>) savedInstanceState.getSerializable("ArrayList");
         }
-        mRecycleFragmentViewModel = new RecycleFragmentViewModel();
-
+        mRecycleFragmentViewModel = new ViewModelProvider(requireActivity()).get(RecycleFragmentViewModel.class);
     }
 
     @Override
@@ -72,7 +71,7 @@ public class RecycleFragment extends Fragment {
         assert getArguments() != null;
         RecyclerView habitRecycler = view.findViewById(R.id.recycle);
         adapter = new HabitAdapter(myHabitArrayList);
-        Log.d(TAG, "myHabitArrayList передано HabitAdapter, стр. 71 RecycleFragment" + myHabitArrayList);
+        Log.d(TAG, "myHabitArrayList передано HabitAdapter, стр. 79 RecycleFragment" + myHabitArrayList);
         habitRecycler.setAdapter(adapter);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         habitRecycler.setLayoutManager(layoutManager);
@@ -102,7 +101,6 @@ public class RecycleFragment extends Fragment {
                 fragmentManager = Objects.requireNonNull(getActivity()).getSupportFragmentManager();
                 fragmentTransaction = fragmentManager
                         .beginTransaction();
-                // замещаем фрагмент
                 fragmentTransaction.replace(R.id.container, habitFragment);
                 Log.d(TAG, "в контейнер добавлен habitFragment, стр. 103 RecycleFragment");
                 fragmentTransaction.addToBackStack(null);
@@ -110,10 +108,10 @@ public class RecycleFragment extends Fragment {
             }
         });
         if (getArguments() != null) {
-            isUseful = (Boolean) getArguments().getBoolean(TYPE_EXTRA);
+            boolean isUseful = (Boolean) getArguments().getBoolean(TYPE_EXTRA);
             if (!isUseful) {
                 LiveData<List<Habit>> data = mRecycleFragmentViewModel.getHarmful();
-                data.observe(this, new Observer<List<Habit>>() {
+                data.observe(getViewLifecycleOwner(), new Observer<List<Habit>>() {
                     @Override
                     public void onChanged(@Nullable List<Habit> list) {
                         myHabitArrayList = list;
@@ -122,9 +120,9 @@ public class RecycleFragment extends Fragment {
                         adapter.notifyDataSetChanged();
                     }
                 });
-            } else if (isUseful) {
+            } else {
                 LiveData<List<Habit>> data = mRecycleFragmentViewModel.getUseful();
-                data.observe(this, new Observer<List<Habit>>() {
+                data.observe(getViewLifecycleOwner(), new Observer<List<Habit>>() {
                     @Override
                     public void onChanged(@Nullable List<Habit> list) {
                         myHabitArrayList = list;
@@ -142,7 +140,7 @@ public class RecycleFragment extends Fragment {
     public void onSaveInstanceState(@NonNull Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
         savedInstanceState.putInt("posit", posit);
-        savedInstanceState.putSerializable("ArrayList", (ArrayList) myHabitArrayList);
+        savedInstanceState.putSerializable("ArrayList", (Serializable) myHabitArrayList);
     }
 }
 

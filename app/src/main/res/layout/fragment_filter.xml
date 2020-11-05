@@ -2,7 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="230dp"
     android:background="@color/colorPrimary">
 
     <LinearLayout
@@ -14,7 +14,7 @@
             android:id="@+id/textOne"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="26dp"
+            android:layout_margin="20dp"
             android:layout_gravity="center_horizontal"
             android:text="Фильтры и сортировки"
             android:textSize="20sp" />
@@ -23,7 +23,7 @@
             android:id="@+id/textTwo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="26dp"
+            android:layout_margin="20dp"
             android:text="Сортировать по названию"
             android:textSize="20sp" />
 
@@ -31,7 +31,7 @@
             android:id="@+id/description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="26dp"
+            android:layout_margin="20dp"
             android:hint="@string/habit_name"
             android:padding="16dp" />
 
